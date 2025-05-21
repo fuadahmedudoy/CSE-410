@@ -38,7 +38,7 @@ point point::operator*(double scalar) {
 
 point cross(point p,point q){
     double x=p.y*q.z -p.z*q.y;
-    double y=p.z*q.y - p.x*q.z;
+    double y=p.z*q.x - p.x*q.z;
     double z=p.x*q.y - p.y*q.x;
     double w=1.0;
     return point(x,y,z,w);
