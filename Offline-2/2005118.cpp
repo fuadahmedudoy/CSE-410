@@ -6,7 +6,7 @@
 #include "bitmap_image.hpp"
 using namespace std;
 
-#define EQ(x, y) (fabs((x) - (y)) < __DBL_EPSILON__)
+
 
 point setW(point p){
     point q(p.x,p.y,p.z,p.w);
@@ -16,9 +16,9 @@ point setW(point p){
     q.w/=q.w;
     return q;
 }
-// bool EQ(double x, double y){
-//     return fabs((x) - (y) ) < __DBL_EPSILON__; 
-// }
+bool EQ(double x, double y){
+    return fabs((x) - (y) ) < __DBL_EPSILON__; 
+}
 
 matrix multiply(matrix A, matrix B){ 
     int row=A.row,col=B.col;  
@@ -291,7 +291,7 @@ int main()
     bitmap_image image(width, height);
     image.set_all_channels(0, 0, 0);
     //cout<<"befr loop\n";
-    //cout<<triangles.size();
+    //cout<<triangles.size();    
     for(Triangle t: triangles)
     {
         //cout<<t.points[0].x<<" "<<t.points[1].y<<" "<<t.points[2].z<<endl;;
@@ -386,30 +386,29 @@ int main()
                     }
                 }
             }
-
         }
-        //cout<<"outside loop\n";
-        image.save_image("out.bmp");
-        for(int i=0;i<height;i++){
-            for(int j=0;j<width;j++){
-                if(zbuffer[i][j]<zMax) {
-                    o4<<fixed << setprecision(6) << zbuffer[i][j] <<"\t";
-                    //cout<<zbuffer[i][j]<<" ";
-                }
-            }
-            o4<<"\n";
-        }
-
-        for(int i=0;i<height;i++) delete[] zbuffer[i];
-
-        delete[] zbuffer;
-
-        in.close();
-
-        o4.close();
-
-        return 0;
-
-
     }
+    
+    // Save the image after processing all triangles
+    image.save_image("out.bmp");
+    
+    // Write z-buffer to file
+    for(int i=0;i<height;i++){
+        for(int j=0;j<width;j++){
+            if(zbuffer[i][j]<zMax) {
+                o4<<fixed << setprecision(6) << zbuffer[i][j] <<"\t";
+                //cout<<zbuffer[i][j]<<" ";
+            }
+        }
+        o4<<"\n";
+    }
+    
+    // Clean up memory
+    for(int i=0;i<height;i++) delete[] zbuffer[i];
+    delete[] zbuffer;
+    
+    in.close();
+    o4.close();
+    
+    return 0;
 }
